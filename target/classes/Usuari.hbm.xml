@@ -1,0 +1,24 @@
+<!DOCTYPE hibernate-mapping PUBLIC  
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
+
+<hibernate-mapping>  
+    <class name="com.iticbcn.usuaris.Model.Usuari" table="Usuari">  
+
+        <!-- Clau primària autoincremental -->
+        <id name="idUsuari" column="idUsuari">
+            <generator class="identity"/>
+        </id>
+
+        <property name="nomUsuari" column="nomUsuari" type="string"/>  
+        <property name="dniUsuari" column="dniUsuari" type="string" unique="true"/>  
+        <property name="rolUsuari" column="rolUsuari" type="string"/>  
+
+        <!-- ManyToMany amb Peticio -->
+        <set name="peticions" table = "Usuari_Peticio" lazy="true" cascade="persist" inverse="true">  
+            <key column="idUsuari"/>  
+            <many-to-many class="com.iticbcn.usuaris.Model.Peticio" column="idPeticio"/>  
+        </set>  
+
+    </class>  
+</hibernate-mapping>  

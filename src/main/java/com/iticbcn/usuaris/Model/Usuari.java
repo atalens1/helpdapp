@@ -4,44 +4,72 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+/*Aquesta classe es mapeja amb el fitxer Usuari.hbm.xml que hi ha a resources */
 
-@Entity
-@Table
 public class Usuari implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int idUsuari;
-    @Column(unique=true)
+
     private String nomUsuari;
-    @Column(unique=true)
+
     private String dniUsuari;
-    @Column
+
     private String rolUsuari;
 
-    @ManyToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY,mappedBy = "usuaris")
-    private Set<Peticio> peticions = new HashSet<>();;
+    private Set<Peticio> peticions = new HashSet<>();
     
-    public Set<Peticio> getPeticio() {
+    public Set<Peticio> getPeticions() {
         return peticions;
     }
 
     public void addPeticio(Peticio p) {
-        if(!this.peticions.contains(p)){
-            peticions.add(p);
-            }
+        if (p != null && !this.peticions.contains(p)) {
+            this.peticions.add(p);
+            p.getUsuaris().add(this);  
+        }
+    }
         
-        p.getUsuaris().add(this);
+    public void setPeticions(Set<Peticio> peticions) {
+        this.peticions = peticions;
     }
 
     public Usuari() {}
 
+    public Usuari(String nomUsuari, String dniUsuari, String rolUsuari) {
+        this.nomUsuari = nomUsuari;
+        this.dniUsuari = dniUsuari;
+        this.rolUsuari = rolUsuari;
+    }
+
+    public int getIdUsuari() {
+        return idUsuari;
+    }
+
+    public void setIdUsuari(int idUsuari) {
+        this.idUsuari = idUsuari;
+    }
+
+    public String getNomUsuari() {
+        return nomUsuari;
+    }
+
+    public void setNomUsuari(String nomUsuari) {
+        this.nomUsuari = nomUsuari;
+    }
+
+    public String getDniUsuari() {
+        return dniUsuari;
+    }
+
+    public void setDniUsuari(String dniUsuari) {
+        this.dniUsuari = dniUsuari;
+    }
+
+    public String getRolUsuari() {
+        return rolUsuari;
+    }
+
+    public void setRolUsuari(String rolUsuari) {
+        this.rolUsuari = rolUsuari;
+    }
 }
