@@ -3,13 +3,9 @@ package com.iticbcn.usuaris;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
 
 import org.hibernate.SessionFactory;
 
-import com.iticbcn.usuaris.DAO.PeticioDAO;
-import com.iticbcn.usuaris.Model.Peticio;
-import com.iticbcn.usuaris.Model.Usuari;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -79,6 +75,7 @@ public class Main {
                 GesPeticio.LlistarPeticions(sf);
                 break;
             case 4:
+                GesPeticio.ModificarPeticio(bf, sf);
                 break;
             case 5:
                 break;
