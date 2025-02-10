@@ -15,7 +15,7 @@
         <property name="rolUsuari" column="rolUsuari" type="string"/>  
 
         <!-- ManyToMany amb Peticio -->
-        <set name="peticions" table = "Usuari_Peticio" lazy="true" cascade="all" inverse="true">  
+        <set name="peticions" table = "Usuari_Peticio" fetch = "join" cascade="persist" inverse="true">  
             <key column="idUsuari"/>  
             <many-to-many class="com.iticbcn.usuaris.Model.Peticio" column="idPeticio"/>  
         </set>  

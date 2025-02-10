@@ -1,4 +1,4 @@
-package com.iticbcn.usuaris;
+package com.iticbcn.usuaris.Controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import com.iticbcn.usuaris.DAO.UsuariDAO;
 import com.iticbcn.usuaris.Model.Peticio;
 import com.iticbcn.usuaris.Model.Usuari;
 
-public class GesPeticio {
+public class PeticioController {
 
     public static void LlistarPeticions(SessionFactory sf) throws Exception {
 
@@ -59,11 +59,14 @@ public class GesPeticio {
             Usuari usuari = udao.getUsuariByDNI(dni);
                         
             if (usuari == null) {
-                p.addUsuari(NouUsuari(bf,dni));
+                usuari = NouUsuari(bf,dni);
+                p.addUsuari(usuari);
             } else {
                 System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
                 users.add(usuari);
             }
+
+
 
             System.out.print("Vols introduir un altre usuari? (N per no introduir) ");
             opt = LecturaEntrada(bf);
@@ -77,16 +80,19 @@ public class GesPeticio {
         petdao.PersistirPeticio(p);
 
         //Aquesta condició permetrà afegir aquells usuaris existents a la petició
+
         if (!users.isEmpty()) {
-/*             for (Usuari u:users) {
-                u.addPeticio(p);
-                udao.ModificarUsuari(u);
-                
-            } */
-            p.setUsuaris(users);
-            petdao.PersistirPeticio(p);
-//            petdao.ModificarPeticio(p);
-        } 
+        //En aquest punt creem un set d'usuaris per emmagatzemar temporalment els usuaris ja afegits
+            Set<Usuari> uset = p.getUsuaris();
+        //recorrem per afegir els usuaris existents a uset
+            for (Usuari u:users) {
+                uset.add(u);
+            }
+        //canviem el set d'usuaris per l'uset, que conté ja tots els usuaris
+            p.setUsuaris(uset);
+        //Modifiquem petició
+            petdao.ModificarPeticio(p);
+        }
     }
 
     public static Usuari NouUsuari(BufferedReader bf, String dni) throws Exception {
@@ -106,8 +112,10 @@ public class GesPeticio {
     public static void ModificarPeticio(BufferedReader bf, SessionFactory sf) throws Exception {
         int idPeticio;
         Peticio p = null;
+        Set<Usuari> users = new HashSet<Usuari>();
         PeticioDAO petdao = new PeticioDAO(sf);
         UsuariDAO udao = new UsuariDAO(sf);
+        boolean addUser = true;
     
         while (p == null) {  // Repetir fins que s'obtingui una petició vàlida
             try {
@@ -120,7 +128,7 @@ public class GesPeticio {
                 } 
 
             } catch (NumberFormatException e) {
-                System.out.println("ID no vàlida, introdueix un número enter.");
+                System.out.println("ID no vàlida, introdueix un nombre enter.");
             } catch (Exception e) {
                 System.err.println("Error inesperat: " + e.getMessage());
                 throw e;  
@@ -136,9 +144,10 @@ public class GesPeticio {
         if (entrada.equalsIgnoreCase("a")) {
             System.out.print("Indiqueu el nou estat (Tancada) (En progrés)");
             p.setEstatPeticio(LecturaEntrada(bf));
+            petdao.ModificarPeticio(p);
         } else if (entrada.equalsIgnoreCase("b")) {
-            Boolean nouUser = true;
-            while (nouUser) {
+            
+            while (addUser) {
                 System.out.print("Introdueix el DNI de l'usuari: ");
                 String dni = LecturaEntrada(bf);
             // Comprovar si ja existeix
@@ -150,20 +159,71 @@ public class GesPeticio {
                     udao.PersistirUsuari(usuari);
                 } else {
                     System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
-                }
 
-                p.addUsuari(usuari);
+                }
+                
+                users.add(usuari);
 
                 System.out.print("Vols introduir un altre usuari? (N per no introduir) ");
+
                 if (LecturaEntrada(bf).equalsIgnoreCase("N")){
-                    nouUser = false;
+                    addUser = false;
                 }
             }
-            petdao.ModificarPeticio(p);
+
+            if (!users.isEmpty()) {
+                //En aquest punt creem un set d'usuaris per emmagatzemar temporalment els usuaris ja afegits
+                    Set<Usuari> uset = p.getUsuaris();
+                //recorrem per afegir els usuaris existents a uset
+                    for (Usuari u:users) {
+                        uset.add(u);
+                    }
+                //canviem el set d'usuaris per l'uset, que conté ja tots els usuaris
+                    p.setUsuaris(uset);
+                //Modifiquem petició
+                    petdao.ModificarPeticio(p);
+                }
+        }
+
+    }
+
+    public static void EsborrarPeticio (BufferedReader bf, SessionFactory sf) throws Exception {
+
+        int idPeticio;
+        Peticio p = null;
+        PeticioDAO petdao = new PeticioDAO(sf);
+
+
+        //Esborrem sols Peticio, respectem els usuaris
+
+        while (p == null) {  // Repetir fins que s'obtingui una petició vàlida
+            try {
+                System.out.print("Quina és la id de la petició? : ");
+                idPeticio = Integer.parseInt(LecturaEntrada(bf));
+                p = petdao.ObtenirPeticio(idPeticio);
+    
+                if (p == null) {
+                    System.out.println("No existeix cap petició amb aquesta ID.");
+                } 
+
+            } catch (NumberFormatException e) {
+                System.out.println("ID no vàlida, introdueix un nombre enter.");
+            } catch (Exception e) {
+                System.err.println("Error inesperat: " + e.getMessage());
+                throw e;  
+            }
+        }
+
+        System.out.println("Aneu a esborrar la petició amb descripció: " + p.getDescPeticio());
+        System.out.print("Premeu S per confirmar: ");
+
+        String entrada = LecturaEntrada(bf); 
+
+        if (entrada.equalsIgnoreCase("s")) {
+            petdao.EsborrarPeticio(p);
         }
     }
-    
-    
+      
     public static String LecturaEntrada(BufferedReader bf) {
         String str1 = null;
         try {

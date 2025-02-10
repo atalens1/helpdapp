@@ -28,11 +28,11 @@
 
 
         <!-- Informa de las operaciones "reales" SQL. Interesante en desarrollo -->
-        <property name="show_sql">true</property>
+        <property name="show_sql">false</property>
 
         <!-- Mantenimiento de la BBDD -->
 
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">validate</property>
 
         <!-- opciones de hbm2dll:
         create : Borra y crea SIEMPRE la base de datos
