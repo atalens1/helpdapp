@@ -3,6 +3,8 @@ package com.iticbcn.usuaris;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.SessionFactory;
 
@@ -37,8 +39,11 @@ public class GesPeticio {
     public static void NovaPeticioUsuari(BufferedReader bf,SessionFactory sf) throws Exception {
 
         Peticio p = new Peticio();
-        Boolean nouUser = true;
+        Boolean addUser = true;
+        Set<Usuari> users = new HashSet<Usuari>();
         String opt ;
+
+        UsuariDAO udao = new UsuariDAO(sf);
 
         System.out.println("INSERIR NOVA PETICIO i USUARI");
         System.out.print("Introduir una descripcio: ");
@@ -46,40 +51,56 @@ public class GesPeticio {
         p.setDataIniPeticio(LocalDateTime.now());
         p.setEstatPeticio("Activa");
 
-        while (nouUser) {
-            p.addUsuari(NouUsuari(bf,sf));
+        while (addUser) {
+            System.out.print("Introdueix el DNI de l'usuari: ");
+            String dni = LecturaEntrada(bf);
+
+        // Comprovar si ja existeix
+            Usuari usuari = udao.getUsuariByDNI(dni);
+                        
+            if (usuari == null) {
+                p.addUsuari(NouUsuari(bf,dni));
+            } else {
+                System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
+                users.add(usuari);
+            }
+
             System.out.print("Vols introduir un altre usuari? (N per no introduir) ");
             opt = LecturaEntrada(bf);
 
             if (opt.equalsIgnoreCase("N")){
-                nouUser = false;
+                addUser = false;
             }
         }
 
         PeticioDAO petdao = new PeticioDAO(sf);
         petdao.PersistirPeticio(p);
+
+        //Aquesta condició permetrà afegir aquells usuaris existents a la petició
+        if (!users.isEmpty()) {
+/*             for (Usuari u:users) {
+                u.addPeticio(p);
+                udao.ModificarUsuari(u);
+                
+            } */
+            p.setUsuaris(users);
+            petdao.PersistirPeticio(p);
+//            petdao.ModificarPeticio(p);
+        } 
     }
 
-    public static Usuari NouUsuari(BufferedReader bf, SessionFactory sf) throws Exception {
-            System.out.print("Introdueix el DNI de l'usuari: ");
-            String dni = LecturaEntrada(bf);
+    public static Usuari NouUsuari(BufferedReader bf, String dni) throws Exception {
 
-        // Comprovar si ja existeix
-            UsuariDAO udao = new UsuariDAO(sf);
-            Usuari usuari = udao.getUsuariByDNI(dni);
-                        
-            if (usuari == null) {
-                System.out.println("Usuari no existent, creant un de nou...");
-                System.out.print("Introdueix el nom: ");
-                String nom = LecturaEntrada(bf);
-                System.out.print("Introdueix el rol: ");
-                String rol = LecturaEntrada(bf);
-                usuari = new Usuari(nom, dni, rol);
-            } else {
-                System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
-            }
-            
-            return usuari;
+        Usuari usuari = null;
+
+        System.out.println("Usuari no existent, creant un de nou...");
+        System.out.print("Introdueix el nom: ");
+        String nom = LecturaEntrada(bf);
+        System.out.print("Introdueix el rol: ");
+        String rol = LecturaEntrada(bf);
+        usuari = new Usuari(nom, dni, rol);
+                
+        return usuari;
     }
 
     public static void ModificarPeticio(BufferedReader bf, SessionFactory sf) throws Exception {
@@ -118,10 +139,21 @@ public class GesPeticio {
         } else if (entrada.equalsIgnoreCase("b")) {
             Boolean nouUser = true;
             while (nouUser) {
-                Usuari u = NouUsuari(bf, sf);
-                /*cal persistir l'usuari per separat, el mètode merge no ho farà */
-                udao.PersistirUsuari(u);
-                p.addUsuari(u);
+                System.out.print("Introdueix el DNI de l'usuari: ");
+                String dni = LecturaEntrada(bf);
+            // Comprovar si ja existeix
+                Usuari usuari = udao.getUsuariByDNI(dni);
+
+                if (usuari == null) {
+                    usuari = NouUsuari(bf, dni);
+                /*cal persistir l'usuari per separat, el mètode merge de petició no ho farà */
+                    udao.PersistirUsuari(usuari);
+                } else {
+                    System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
+                }
+
+                p.addUsuari(usuari);
+
                 System.out.print("Vols introduir un altre usuari? (N per no introduir) ");
                 if (LecturaEntrada(bf).equalsIgnoreCase("N")){
                     nouUser = false;

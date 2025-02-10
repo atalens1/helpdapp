@@ -13,6 +13,7 @@ public class Main {
         SessionFactory sf = HibernateUtil.getSessionFactory();
 
         try (BufferedReader bf = new BufferedReader(new InputStreamReader(System.in))) {
+            System.out.println("=============================");
             System.out.println("Gestio de Peticions i Usuaris");
             System.out.println("=============================");
             MostrarMenu(bf,sf);

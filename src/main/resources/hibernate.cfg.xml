@@ -32,7 +32,7 @@
 
         <!-- Mantenimiento de la BBDD -->
 
-        <property name="hbm2ddl.auto">validate</property>
+        <property name="hbm2ddl.auto">create</property>
 
         <!-- opciones de hbm2dll:
         create : Borra y crea SIEMPRE la base de datos

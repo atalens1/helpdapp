@@ -31,7 +31,7 @@ public class Peticio implements Serializable {
     @Column
     private String estatPeticio;
     
-    @ManyToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinTable(name="Usuari_Peticio",
     joinColumns = { @JoinColumn(name="idPeticio",foreignKey = @ForeignKey(name="FK_UP_PETICIO")) },
     inverseJoinColumns = { @JoinColumn(name="idUsuari",foreignKey = @ForeignKey(name="FK_UP_USUARI")) } )
