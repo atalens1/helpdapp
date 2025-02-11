@@ -1,6 +1,6 @@
 <!DOCTYPE hibernate-mapping PUBLIC  
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
+    "http://www.hibernate.org/dtd/hibernate-mapping.dtd">  
 
 <hibernate-mapping>  
     <class name="com.iticbcn.usuaris.Model.Usuari" table="Usuari">  
@@ -15,7 +15,7 @@
         <property name="rolUsuari" column="rolUsuari" type="string"/>  
 
         <!-- ManyToMany amb Peticio -->
-        <set name="peticions" table = "Usuari_Peticio" fetch = "join" cascade="persist" inverse="true">  
+        <set name="peticions" table = "Usuari_Peticio" fetch = "join" lazy = "false" cascade="persist" inverse="true">  
             <key column="idUsuari"/>  
             <many-to-many class="com.iticbcn.usuaris.Model.Peticio" column="idPeticio"/>  
         </set>  

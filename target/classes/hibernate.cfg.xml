@@ -29,6 +29,7 @@
 
         <!-- Informa de las operaciones "reales" SQL. Interesante en desarrollo -->
         <property name="show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
 
         <!-- Mantenimiento de la BBDD -->
 

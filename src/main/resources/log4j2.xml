@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -7,17 +6,26 @@
     </Appenders>
 
     <Loggers>
-        <!-- Nivel global de logs (cambiar a DEBUG si quieres ver más info) -->
-        <Root level="info">
+        <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
 
-        <!-- 🔹 Ocultar logs DEBUG de Hibernate -->
         <Logger name="org.hibernate" level="warn" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
 
-        <!-- 🔹 Ocultar logs DEBUG de MariaDB JDBC -->
+        <Logger name="org.hibernate.SQL" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
         <Logger name="org.mariadb.jdbc" level="warn" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>

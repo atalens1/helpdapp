@@ -21,7 +21,7 @@ public class PeticioController {
         return petdao.LlistarPeticions();
     }
     
-    public static void NovaPeticioUsuari(BufferedReader bf,SessionFactory sf) throws Exception {
+    public static void AfegirPeticioUsuari(BufferedReader bf,SessionFactory sf) throws Exception {
 
         Peticio p = new Peticio();
         Boolean addUser = true;
@@ -30,7 +30,7 @@ public class PeticioController {
 
         UsuariDAO udao = new UsuariDAO(sf);
 
-        InputView.NovaPeticioUsuari(bf);
+        p = InputView.NovaPeticioUsuari(bf);
 
         while (addUser) {
             String dni = InputView.DemanarDNIUsuari(bf);
@@ -46,8 +46,6 @@ public class PeticioController {
                 users.add(usuari);
             }
 
-
-
             System.out.print("Vols introduir un altre usuari? (N per no introduir) ");
             opt = InputView.LecturaEntrada(bf);
 
@@ -57,8 +55,13 @@ public class PeticioController {
         }
 
         PeticioDAO petdao = new PeticioDAO(sf);
-        petdao.PersistirPeticio(p);
-
+        try {
+            petdao.PersistirPeticio(p);
+            System.out.println("Petició afegida correctament");
+        } catch (Exception e) {
+            System.err.println("Error a l'inserir petició: " + e.getMessage());
+        }
+        
         //Aquesta condició permetrà afegir aquells usuaris existents a la petició
 
         if (!users.isEmpty()) {
@@ -71,7 +74,13 @@ public class PeticioController {
         //canviem el set d'usuaris per l'uset, que conté ja tots els usuaris
             p.setUsuaris(uset);
         //Modifiquem petició
-            petdao.ModificarPeticio(p);
+            try {
+                petdao.ModificarPeticio(p);
+                System.out.println("Usuaris modificats correctament");   
+            } catch (Exception e) {
+                System.err.println("Error afegint usuaris existents: " + e.getMessage());
+            }
+            
         }
     }
 
@@ -93,7 +102,13 @@ public class PeticioController {
         if (entrada.equalsIgnoreCase("a")) {
             System.out.print("Indiqueu el nou estat (Tancada) o (En progrés): ");
             p.setEstatPeticio(InputView.LecturaEntrada(bf));
-            petdao.ModificarPeticio(p);
+            try {
+                petdao.ModificarPeticio(p);
+                System.out.println("Estat de petició modificat correctament");
+            } catch (Exception e) {
+                System.err.println("Error al modificar la petició" + e.getMessage());
+            }
+            
         } else if (entrada.equalsIgnoreCase("b")) {
             
             while (addUser) {
@@ -104,7 +119,13 @@ public class PeticioController {
                 if (usuari == null) {
                     usuari = InputView.DemanarDadesUsuari(bf, dni);
                 /*cal persistir l'usuari per separat, el mètode merge de petició no ho farà */
-                    udao.PersistirUsuari(usuari);
+                    try {
+                        udao.PersistirUsuari(usuari);
+                        System.out.println("usuari persistit correctament");
+                    } catch (Exception e) {
+                        System.err.println("Error afegint usuaris: " + e.getMessage());
+                    }
+                    
                 } else {
                     System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
 
@@ -129,7 +150,12 @@ public class PeticioController {
                 //canviem el set d'usuaris per l'uset, que conté ja tots els usuaris
                     p.setUsuaris(uset);
                 //Modifiquem petició
+                try {
                     petdao.ModificarPeticio(p);
+                    System.out.println("Usuaris afegits correctament");
+                } catch (Exception e) {
+                    System.err.println("Error afegint usuaris a la petició" + e.getMessage());
+                }
                 }
         }
     }
@@ -151,7 +177,13 @@ public class PeticioController {
         String entrada = InputView.ConfirmacioEsborrament(bf, p.getDescPeticio()); 
 
         if (entrada.equalsIgnoreCase("s")) {
-            petdao.EsborrarPeticio(p);
+            try {
+                petdao.EsborrarPeticio(p);
+                System.out.println("Petició esborrada correctament");
+            } catch (Exception e) {
+                System.err.println("Error esborrant petició: "+e.getMessage());
+            }
+            
         }
     }
       

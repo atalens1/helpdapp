@@ -25,7 +25,7 @@ public class InputView {
                 
                 switch (opcio) {
                     case 1:
-                        PeticioController.NovaPeticioUsuari(bf, sf);
+                        PeticioController.AfegirPeticioUsuari(bf, sf);
                         break;
                     case 2:
                         UsuariController.AfegirUsuari(bf, sf);
