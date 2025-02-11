@@ -5,9 +5,7 @@ import java.io.IOException;
 
 import org.hibernate.SessionFactory;
 
-import com.iticbcn.usuaris.DAO.PeticioDAO;
 import com.iticbcn.usuaris.DAO.UsuariDAO;
-import com.iticbcn.usuaris.Model.Peticio;
 import com.iticbcn.usuaris.Model.Usuari;
 
 public class UsuariController {
