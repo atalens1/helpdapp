@@ -72,19 +72,49 @@ public class InputView {
     }
 
     public static void MostrarPeticions(List<Peticio> peticions) {
-    for (Peticio p : peticions) {
-        System.out.println("------------------------------------");
-        System.out.println("Id Petició: " + p.getIdPeticio());
-        System.out.println("Desc Petició: " + p.getDescPeticio());
-        System.out.println("Data Inici Petició: " + p.getDataIniPeticio());
-        System.out.println("Estat petició: " + p.getEstatPeticio());
-        for (Usuari u : p.getUsuaris()) {
-            System.out.println("Usuari: " + u.getNomUsuari() + " - Doc. Identificació: " 
-            + u.getDniUsuari() + " - Rol: " + u.getRolUsuari());
+        for (Peticio p : peticions) {
+            System.out.println("------------------------------------");
+            System.out.println("Id Petició: " + p.getIdPeticio());
+            System.out.println("Desc Petició: " + p.getDescPeticio());
+            System.out.println("Data Inici Petició: " + p.getDataIniPeticio());
+            System.out.println("Estat petició: " + p.getEstatPeticio());
+            for (Usuari u : p.getUsuaris()) {
+                System.out.println("Usuari: " + u.getNomUsuari() + " - Doc. Identificació: " 
+                + u.getDniUsuari() + " - Rol: " + u.getRolUsuari());
+            }
+            System.out.println("------------------------------------");
         }
-        System.out.println("------------------------------------");
     }
-}
+
+    public static int DemanarIdPeticio(BufferedReader bf) {
+        int IdP = 0;
+        System.out.print("Quina és la id de la petició? : ");
+        try {
+            IdP = Integer.parseInt(LecturaEntrada(bf));
+        } catch (NumberFormatException e) {
+            System.out.println("ID no vàlida, introdueix un nombre enter.");
+        } catch (Exception e) {
+            System.err.println("Error inesperat: " + e.getMessage());
+            throw e;  
+        }
+
+        return IdP;
+    }
+
+    public static String DemanarAccioModificarPeticio(BufferedReader bf) {
+        System.out.println("Indiqueu l'acció a fer amb la petició");
+        System.out.println("A. Modificar l'estat");
+        System.out.println("B. Afegir usuaris");
+        return LecturaEntrada(bf);
+    }
+
+    public static String ConfirmacioEsborrament(BufferedReader bf, String DescPet) {
+        System.out.println("Aneu a esborrar la petició amb descripció: " + DescPet);
+        System.out.print("Premeu S per confirmar: ");
+        return LecturaEntrada(bf);
+    }
+    
+    
 
 
     private static String LecturaEntrada(BufferedReader bf) {

@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-
+import org.hibernate.tuple.IdentifierProperty;
 
 import com.iticbcn.usuaris.DAO.PeticioDAO;
 import com.iticbcn.usuaris.DAO.UsuariDAO;
 import com.iticbcn.usuaris.Model.Peticio;
 import com.iticbcn.usuaris.Model.Usuari;
+import com.iticbcn.usuaris.Views.InputView;
 
 public class PeticioController {
 
@@ -105,31 +106,14 @@ public class PeticioController {
         boolean addUser = true;
     
         while (p == null) {  // Repetir fins que s'obtingui una petició vàlida
-            try {
-                System.out.print("Quina és la id de la petició? : ");
-                idPeticio = Integer.parseInt(LecturaEntrada(bf));
-                p = petdao.ObtenirPeticio(idPeticio);
-    
-                if (p == null) {
-                    System.out.println("No existeix cap petició amb aquesta ID.");
-                } 
-
-            } catch (NumberFormatException e) {
-                System.out.println("ID no vàlida, introdueix un nombre enter.");
-            } catch (Exception e) {
-                System.err.println("Error inesperat: " + e.getMessage());
-                throw e;  
-            }
+            idPeticio = InputView.DemanarIdPeticio(bf);
+            p = petdao.ObtenirPeticio(idPeticio);
         }
-    
-        System.out.println("Indiqueu l'acció a fer amb la petició");
-        System.out.println("A. Modificar l'estat");
-        System.out.println("B. Afegir usuaris");
-
-        String entrada = LecturaEntrada(bf); 
+            
+        String entrada = InputView.DemanarAccioModificarPeticio(bf);
 
         if (entrada.equalsIgnoreCase("a")) {
-            System.out.print("Indiqueu el nou estat (Tancada) (En progrés)");
+            System.out.print("Indiqueu el nou estat (Tancada) o (En progrés): ");
             p.setEstatPeticio(LecturaEntrada(bf));
             petdao.ModificarPeticio(p);
         } else if (entrada.equalsIgnoreCase("b")) {
@@ -171,7 +155,6 @@ public class PeticioController {
                     petdao.ModificarPeticio(p);
                 }
         }
-
     }
 
     public static void EsborrarPeticio (BufferedReader bf, SessionFactory sf) throws Exception {
@@ -184,27 +167,11 @@ public class PeticioController {
         //Esborrem sols Peticio, respectem els usuaris
 
         while (p == null) {  // Repetir fins que s'obtingui una petició vàlida
-            try {
-                System.out.print("Quina és la id de la petició? : ");
-                idPeticio = Integer.parseInt(LecturaEntrada(bf));
-                p = petdao.ObtenirPeticio(idPeticio);
-    
-                if (p == null) {
-                    System.out.println("No existeix cap petició amb aquesta ID.");
-                } 
-
-            } catch (NumberFormatException e) {
-                System.out.println("ID no vàlida, introdueix un nombre enter.");
-            } catch (Exception e) {
-                System.err.println("Error inesperat: " + e.getMessage());
-                throw e;  
-            }
+            idPeticio = InputView.DemanarIdPeticio(bf);
+            p = petdao.ObtenirPeticio(idPeticio);
         }
 
-        System.out.println("Aneu a esborrar la petició amb descripció: " + p.getDescPeticio());
-        System.out.print("Premeu S per confirmar: ");
-
-        String entrada = LecturaEntrada(bf); 
+        String entrada = InputView.ConfirmacioEsborrament(bf, p.getDescPeticio()); 
 
         if (entrada.equalsIgnoreCase("s")) {
             petdao.EsborrarPeticio(p);
