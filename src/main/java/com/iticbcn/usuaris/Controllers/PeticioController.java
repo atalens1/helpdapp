@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
@@ -16,24 +17,10 @@ import com.iticbcn.usuaris.Model.Usuari;
 
 public class PeticioController {
 
-    public static void LlistarPeticions(SessionFactory sf) throws Exception {
+    public static List<Peticio> LlistarPeticions(SessionFactory sf) throws Exception {
 
         PeticioDAO petdao = new PeticioDAO(sf);
-
-        for (Peticio p:petdao.LlistarPeticions()) {
-            System.out.println("------------------------------------");
-            System.out.println("Id Petició: " +  p.getIdPeticio());
-            System.out.println("Desc Petició: " +  p.getDescPeticio());
-            System.out.println("Data Inici Petició: " + p.getDataIniPeticio());
-            System.out.println("Estat petició: " +  p.getEstatPeticio());
-            for (Usuari u:p.getUsuaris()) {
-                System.out.println("Id Usuari: " + u.getIdUsuari());
-                System.out.println("Nom Usuari: " + u.getNomUsuari());
-                System.out.println("DNI Usuari: " + u.getDniUsuari());
-                System.out.println("Rol Usuari: " + u.getRolUsuari());
-            }
-            System.out.println("------------------------------------");
-        }
+        return petdao.LlistarPeticions();
     }
     
     public static void NovaPeticioUsuari(BufferedReader bf,SessionFactory sf) throws Exception {

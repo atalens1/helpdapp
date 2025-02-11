@@ -2,11 +2,14 @@ package com.iticbcn.usuaris.Views;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 import org.hibernate.SessionFactory;
 
 import com.iticbcn.usuaris.Controllers.PeticioController;
 import com.iticbcn.usuaris.Controllers.UsuariController;
+import com.iticbcn.usuaris.Model.Peticio;
+import com.iticbcn.usuaris.Model.Usuari;
 
 public class InputView {
 
@@ -27,7 +30,7 @@ public class InputView {
                         UsuariController.AfegirUsuari(bf, sf);
                         break;
                     case 3:
-                        PeticioController.LlistarPeticions(sf);
+                        MostrarPeticions(PeticioController.LlistarPeticions(sf));
                         break;
                     case 4:
                         PeticioController.ModificarPeticio(bf, sf);
@@ -67,6 +70,22 @@ public class InputView {
         System.out.println("7. Sortir");
         System.out.print("Tria una opció: ");
     }
+
+    public static void MostrarPeticions(List<Peticio> peticions) {
+    for (Peticio p : peticions) {
+        System.out.println("------------------------------------");
+        System.out.println("Id Petició: " + p.getIdPeticio());
+        System.out.println("Desc Petició: " + p.getDescPeticio());
+        System.out.println("Data Inici Petició: " + p.getDataIniPeticio());
+        System.out.println("Estat petició: " + p.getEstatPeticio());
+        for (Usuari u : p.getUsuaris()) {
+            System.out.println("Usuari: " + u.getNomUsuari() + " - Doc. Identificació: " 
+            + u.getDniUsuari() + " - Rol: " + u.getRolUsuari());
+        }
+        System.out.println("------------------------------------");
+    }
+}
+
 
     private static String LecturaEntrada(BufferedReader bf) {
         String str1 = null;
