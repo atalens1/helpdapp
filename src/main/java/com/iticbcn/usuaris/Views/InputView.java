@@ -2,6 +2,7 @@ package com.iticbcn.usuaris.Views;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -69,6 +70,19 @@ public class InputView {
         System.out.println("6. Llistar Usuaris");
         System.out.println("7. Sortir");
         System.out.print("Tria una opció: ");
+    }
+
+    public static Peticio NovaPeticioUsuari(BufferedReader bf) {
+
+        Peticio p = new Peticio();
+
+        System.out.println("INSERIR NOVA PETICIO i USUARI");
+        System.out.print("Introduir una descripcio: ");
+        p.setDescPeticio(LecturaEntrada(bf));
+        p.setDataIniPeticio(LocalDateTime.now());
+        p.setEstatPeticio("Activa");
+
+        return p;
     }
 
     public static String DemanarDNIUsuari(BufferedReader bf) {
@@ -148,7 +162,7 @@ public class InputView {
     
 
 
-    private static String LecturaEntrada(BufferedReader bf) {
+    public static String LecturaEntrada(BufferedReader bf) {
         String str1 = null;
         try {
             str1 = bf.readLine();

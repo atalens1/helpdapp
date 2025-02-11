@@ -1,7 +1,6 @@
 package com.iticbcn.usuaris.Controllers;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -24,46 +23,23 @@ public class UsuariController {
         u = udao.getUsuariByDNI(dni);
 
         if (u == null) {
-            u = NouUsuari(bf, dni);
-            udao.PersistirUsuari(u);
+            u = InputView.DemanarDadesUsuari(bf, dni);
+            try {
+                udao.PersistirUsuari(u);
+                System.out.println("Usuari creat amb èxit");
+            } catch (Exception e) {
+                System.err.println("Error al crear l'usuari: " + e.getMessage());
+            }
         } else {
             System.out.println("Usuari existent trobat: " + u.getNomUsuari());
             System.out.println("Tornant a menú principal");
         }
-
-    }
-
-    public static Usuari NouUsuari(BufferedReader bf, String dni) throws Exception {
-
-        Usuari usuari = null;
-
-        System.out.println("Usuari no existent, creant un de nou...");
-        System.out.print("Introdueix el nom: ");
-        String nom = LecturaEntrada(bf);
-        System.out.print("Introdueix el rol: ");
-        String rol = LecturaEntrada(bf);
-        usuari = new Usuari(nom, dni, rol);
-                
-        return usuari;
     }
 
     public static List<Usuari> LlistarUsuaris(SessionFactory sf) throws Exception {
 
         UsuariDAO udao = new UsuariDAO(sf);
         return udao.LlistarUsuaris();
-    }
-
-    public static String LecturaEntrada(BufferedReader bf) {
-        String str1 = null;
-        try {
-            str1 = bf.readLine();
-        } catch (IOException e) {
-            System.err.println("Error d'entrada: " + e.getMessage());
-        } catch (Exception ex) {
-            System.err.println("Error general: " + ex.getMessage());
-        }
-
-        return str1;
     }
     
 }
