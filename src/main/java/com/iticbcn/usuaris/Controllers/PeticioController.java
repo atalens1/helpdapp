@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.tuple.IdentifierProperty;
 
 import com.iticbcn.usuaris.DAO.PeticioDAO;
 import com.iticbcn.usuaris.DAO.UsuariDAO;
@@ -40,14 +39,13 @@ public class PeticioController {
         p.setEstatPeticio("Activa");
 
         while (addUser) {
-            System.out.print("Introdueix el DNI de l'usuari: ");
-            String dni = LecturaEntrada(bf);
+            String dni = InputView.DemanarDNIUsuari(bf);
 
         // Comprovar si ja existeix
             Usuari usuari = udao.getUsuariByDNI(dni);
                         
             if (usuari == null) {
-                usuari = NouUsuari(bf,dni);
+                usuari = InputView.DemanarDadesUsuari(bf,dni);
                 p.addUsuari(usuari);
             } else {
                 System.out.println("Usuari existent trobat: " + usuari.getNomUsuari());
@@ -83,20 +81,6 @@ public class PeticioController {
         }
     }
 
-    public static Usuari NouUsuari(BufferedReader bf, String dni) throws Exception {
-
-        Usuari usuari = null;
-
-        System.out.println("Usuari no existent, creant un de nou...");
-        System.out.print("Introdueix el nom: ");
-        String nom = LecturaEntrada(bf);
-        System.out.print("Introdueix el rol: ");
-        String rol = LecturaEntrada(bf);
-        usuari = new Usuari(nom, dni, rol);
-                
-        return usuari;
-    }
-
     public static void ModificarPeticio(BufferedReader bf, SessionFactory sf) throws Exception {
         int idPeticio;
         Peticio p = null;
@@ -119,13 +103,12 @@ public class PeticioController {
         } else if (entrada.equalsIgnoreCase("b")) {
             
             while (addUser) {
-                System.out.print("Introdueix el DNI de l'usuari: ");
-                String dni = LecturaEntrada(bf);
+                String dni = InputView.DemanarDNIUsuari(bf);
             // Comprovar si ja existeix
                 Usuari usuari = udao.getUsuariByDNI(dni);
 
                 if (usuari == null) {
-                    usuari = NouUsuari(bf, dni);
+                    usuari = InputView.DemanarDadesUsuari(bf, dni);
                 /*cal persistir l'usuari per separat, el mètode merge de petició no ho farà */
                     udao.PersistirUsuari(usuari);
                 } else {

@@ -2,11 +2,13 @@ package com.iticbcn.usuaris.Controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 import org.hibernate.SessionFactory;
 
 import com.iticbcn.usuaris.DAO.UsuariDAO;
 import com.iticbcn.usuaris.Model.Usuari;
+import com.iticbcn.usuaris.Views.InputView;
 
 public class UsuariController {
 
@@ -16,8 +18,7 @@ public class UsuariController {
         UsuariDAO udao = new UsuariDAO(sf);
 
         System.out.println("INSERIR NOU USUARI");
-        System.out.print("Introdueix el DNI de l'usuari: ");
-        String dni = LecturaEntrada(bf);
+        String dni = InputView.DemanarDNIUsuari(bf);
 
     // Comprovar si ja existeix
         u = udao.getUsuariByDNI(dni);
@@ -46,18 +47,10 @@ public class UsuariController {
         return usuari;
     }
 
-    public static void LlistarUsuaris(SessionFactory sf) throws Exception {
+    public static List<Usuari> LlistarUsuaris(SessionFactory sf) throws Exception {
 
         UsuariDAO udao = new UsuariDAO(sf);
-
-        for (Usuari u:udao.LlistarUsuaris()) {
-            System.out.println("------------------------------------");
-            System.out.println("Id de l'usuari: " + u.getIdUsuari());
-            System.out.println("DNI de l'usuari: " +  u.getDniUsuari());
-            System.out.println("Nom de l'usuari: " +  u.getNomUsuari());
-            System.out.println("Rol de l'usuari: " + u.getRolUsuari());
-            System.out.println("------------------------------------");
-        }
+        return udao.LlistarUsuaris();
     }
 
     public static String LecturaEntrada(BufferedReader bf) {

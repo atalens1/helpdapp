@@ -39,7 +39,7 @@ public class InputView {
                         PeticioController.EsborrarPeticio(bf, sf);
                         break;
                     case 6:
-                        UsuariController.LlistarUsuaris(sf);
+                        MostrarUsuaris(UsuariController.LlistarUsuaris(sf));
                         break;
                     case 7:
                         continuar = false; // Finalitza el bucle si l'usuari vol sortir
@@ -71,6 +71,26 @@ public class InputView {
         System.out.print("Tria una opció: ");
     }
 
+    public static String DemanarDNIUsuari(BufferedReader bf) {
+        System.out.print("Introdueix el DNI de l'usuari: ");
+        return LecturaEntrada(bf);
+
+    }
+
+    public static Usuari DemanarDadesUsuari(BufferedReader bf, String dni) throws Exception {
+
+        Usuari usuari = null;
+
+        System.out.println("Usuari no existent, creant un de nou...");
+        System.out.print("Introdueix el nom: ");
+        String nom = LecturaEntrada(bf);
+        System.out.print("Introdueix el rol: ");
+        String rol = LecturaEntrada(bf);
+        usuari = new Usuari(nom, dni, rol);
+                
+        return usuari;
+    }
+
     public static void MostrarPeticions(List<Peticio> peticions) {
         for (Peticio p : peticions) {
             System.out.println("------------------------------------");
@@ -82,6 +102,17 @@ public class InputView {
                 System.out.println("Usuari: " + u.getNomUsuari() + " - Doc. Identificació: " 
                 + u.getDniUsuari() + " - Rol: " + u.getRolUsuari());
             }
+            System.out.println("------------------------------------");
+        }
+    }
+
+    public static void MostrarUsuaris(List<Usuari> usuaris) {
+        for (Usuari u: usuaris) {
+            System.out.println("------------------------------------");
+            System.out.println("Id de l'usuari: " + u.getIdUsuari());
+            System.out.println("DNI de l'usuari: " +  u.getDniUsuari());
+            System.out.println("Nom de l'usuari: " +  u.getNomUsuari());
+            System.out.println("Rol de l'usuari: " + u.getRolUsuari());
             System.out.println("------------------------------------");
         }
     }
